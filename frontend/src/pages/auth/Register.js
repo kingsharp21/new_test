@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import * as Yup from "yup";
 import { useFormik } from 'formik';
 
+import chatting from "../../assets/news-chatting.svg"
+
 
 import authService from '../../services/authService';
 
@@ -32,13 +34,12 @@ function Register() {
                 .required("Password is required")
                 .label("Password"),
             confirm_password: Yup.string()
-                .min(8, "Password should be a minimum of 8 characters")
-                .required("Confirm Password is required")
-                .label("Confirm Password")
+                .oneOf([Yup.ref('password'), null], 'Passwords must match')
+                .required('Confirm Password is required')
         }),
-        onSubmit: values => {
-            console.log(values);
+        onSubmit: (values, { resetForm })=> {
             handleSubmit(values)
+            resetForm();
         },
     });
 
@@ -53,7 +54,6 @@ function Register() {
                 "password":body.password,
                 "password_confirmation":body.confirm_password
             })
-          console.log(res);
           if (res.status === "success") {
             setSucessMsg('User registration was succesfull')
           }
@@ -71,58 +71,30 @@ function Register() {
                 <div className="container-fluid px-3">
                     <div className="row">
                         <div className="col-lg-6 d-none d-lg-flex justify-content-center align-items-center min-vh-lg-100 position-relative bg-light px-0">
-                            {/* Logo & Language */}
-                            <div className="position-absolute top-0 start-0 end-0 mt-3 mx-3">
+                        <div className="position-absolute top-0 start-0 end-0 mt-3 mx-3">
                                 <div className="d-none d-lg-flex justify-content-between">
-                                    <a href="./index.html">
-                                        <img className="w-100" src="./assets/svg/logos/logo.svg" alt="Image Description" data-hs-theme-appearance="default" style={{ minWidth: '7rem', maxWidth: '7rem' }} />
-                                        <img className="w-100" src="./assets/svg/logos-light/logo.svg" alt="Image Description" data-hs-theme-appearance="dark" style={{ minWidth: '7rem', maxWidth: '7rem' }} />
-                                    </a>
-                                    {/* Select */}
-
-                                    {/* End Select */}
+                                    <h1>Logo</h1>
+                                   
                                 </div>
                             </div>
-                            {/* End Logo & Language */}
                             <div style={{ maxWidth: '23rem' }}>
                                 <div className="text-center mb-5">
-                                    <img className="img-fluid" src="./assets/svg/illustrations/oc-chatting.svg" alt="Image Description" style={{ width: '12rem' }} data-hs-theme-appearance="default" />
-                                    <img className="img-fluid" src="./assets/svg/illustrations-light/oc-chatting.svg" alt="Image Description" style={{ width: '12rem' }} data-hs-theme-appearance="dark" />
+                                    <img className="img-fluid" src={chatting} alt="news" style={{ width: '12rem' }} data-hs-theme-appearance="default" />
                                 </div>
                                 <div className="mb-5">
-                                    <h2 className="display-5">Build digital products with:</h2>
+                                    <h2 className="display-5">Get up to date news</h2>
                                 </div>
-                                {/* List Checked */}
                                 <ul className="list-checked list-checked-lg list-checked-primary list-py-2">
                                     <li className="list-checked-item">
-                                        <span className="d-block fw-semibold mb-1">All-in-one tool</span>
-                                        Build, run, and scale your apps - end to end
+                                        <span className="d-block fw-semibold mb-1">Articles from different sources</span>
+                                        sources like Yahoo Entertainment, CNET, The Guardian, The New York Times etc.
                                     </li>
                                     <li className="list-checked-item">
-                                        <span className="d-block fw-semibold mb-1">Easily add &amp; manage your services</span>
-                                        It brings together your tasks, projects, timelines, files and more
+                                        <span className="d-block fw-semibold mb-1">Personalized news feed</span>
+                                        Customize your news feed by selecting their preferred sources, categories, and authors.
                                     </li>
                                 </ul>
-                                {/* End List Checked */}
-                                <div className="row justify-content-between mt-5 gx-3">
-                                    <div className="col">
-                                        <img className="img-fluid" src="./assets/svg/brands/gitlab-gray.svg" alt="Logo" />
-                                    </div>
-                                    {/* End Col */}
-                                    <div className="col">
-                                        <img className="img-fluid" src="./assets/svg/brands/fitbit-gray.svg" alt="Logo" />
-                                    </div>
-                                    {/* End Col */}
-                                    <div className="col">
-                                        <img className="img-fluid" src="./assets/svg/brands/flow-xo-gray.svg" alt="Logo" />
-                                    </div>
-                                    {/* End Col */}
-                                    <div className="col">
-                                        <img className="img-fluid" src="./assets/svg/brands/layar-gray.svg" alt="Logo" />
-                                    </div>
-                                    {/* End Col */}
-                                </div>
-                                {/* End Row */}
+                              
                             </div>
                         </div>
                         {/* End Col */}

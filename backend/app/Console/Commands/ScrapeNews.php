@@ -31,19 +31,19 @@ class ScrapeNews extends Command
      */
 
      protected $categoryMap = [
-        'politics' => 'Politics',
-        'sports' => 'Sports',
-        'technology' => 'Technology',
-        'health' => 'Health',
-        'business' => 'Business',
+        'politics' => 'politics',
+        'sports' => 'sport',
+        'technology' => 'technology',
+        'health' => 'health',
+        'business' => 'business',
     ];
 
     protected $categoryKeywords = [
-        'Technology' => ['technology', 'tech', 'gadgets', 'innovation'],
-        'Politics' => ['politics', 'government', 'election', 'policy'],
-        'Sports' => ['sports', 'football', 'basketball', 'cricket'],
-        'Health' => ['health', 'wellness', 'medicine', 'fitness'],
-        'Business' => ['business', 'finance', 'economy', 'market'],
+        'technology' => ['technology', 'tech', 'gadgets', 'innovation'],
+        'politics' => ['politics', 'government', 'election', 'policy'],
+        'sport' => ['sport', 'football', 'basketball', 'cricket'],
+        'health' => ['health', 'wellness', 'medicine', 'fitness'],
+        'business' => ['business', 'finance', 'economy', 'market'],
     ];
 
     

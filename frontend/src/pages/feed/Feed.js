@@ -211,7 +211,7 @@ function Feed() {
                 <Article
                 key={index}
                 img={val.urlToImage}
-                apiname={author.name}
+                author={author.name}
                 source={source.name}
                 category={category.name}
                 title={val.title}

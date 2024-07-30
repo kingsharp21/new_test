@@ -49,7 +49,7 @@ class AuthController extends Controller
                 $response = ["status" =>"success","data"=>$user];
                 return response($response, 200);
             } else {
-                $response = ["status" =>"error","message" => "Password mismatch"];
+                $response = ["status" =>"error","message" => "Password incorrect"];
                 return response($response, 422);
             }
         } else {

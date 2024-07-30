@@ -6,7 +6,7 @@ function Preferences({sources,categories,authors,modelfxn}) {
     const [checkedsources, setCheckedSources] = useState([]);
     const [checkedcategories, setCheckedCategories] = useState([]);
     const [checkedauthors, setCheckedAuthors] = useState([]);
-    const storedItem = localStorage.getItem("user");
+    const storedItem = localStorage.getItem("new_aggregator_user");
     const userData = JSON.parse(storedItem);
     const storedItem2 = localStorage.getItem("preferences");
     const preferences = JSON.parse(storedItem2);

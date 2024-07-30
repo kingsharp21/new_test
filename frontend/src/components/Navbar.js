@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Navbar({showPreferenceModel}) {
-    const storedItem = localStorage.getItem("user");
+    const storedItem = localStorage.getItem("new_aggregator_user");
     const userData = JSON.parse(storedItem);
 
     const [showMenu, setShowMenu] = useState(false);

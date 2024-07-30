@@ -14,11 +14,11 @@ class CategoriesTableSeeder extends Seeder
     public function run(): void
     {
         $categories = [
-            'Politics',
-            'Sports',
-            'Technology',
-            'Health',
-            'Business',
+            'politics',
+            'sport',
+            'technology',
+            'health',
+            'business',
             // Add more categories as needed
         ];
 

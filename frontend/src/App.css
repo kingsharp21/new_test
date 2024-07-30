@@ -32847,6 +32847,8 @@ article {
 }
 .article-wrapper {
   height: 100%;
+  width: 100%;
+  position: relative;
 }
 
 article a::after {
@@ -32871,8 +32873,8 @@ article img {
 }
 
 .article-body span {
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: .9rem;
+  font-weight: 500;
   margin-bottom: 8px;
 }
 .article-body span.source{
@@ -32888,11 +32890,11 @@ article img {
   overflow: hidden;
   width: 100%;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   max-height: 70px;
   padding: 0;
-  margin: 0;
+  margin: 1rem 0;
 }
 
 .article-body .title:hover {
