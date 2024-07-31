@@ -1,37 +1,40 @@
-# Use the official PHP image as the base image
-FROM php:8.2-fpm
+FROM php:8.2-apache
 
-# Set working directory
+RUN apt-get update -y && \
+    apt-get install -y unzip libpq-dev libcurl4-gnutls-dev && \
+    docker-php-ext-install pdo pdo_mysql bcmath
+
+RUN pecl install -o -f redis && \
+    rm -rf /tmp/pear && \
+    docker-php-ext-enable redis
+
+# Enable mod_rewrite for Laravel
+RUN a2enmod rewrite
+
+# Set the working directory
 WORKDIR /var/www
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    zip \
-    unzip
+# Copy application source
+COPY . .
 
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+# Copy composer binary
+COPY --from=composer:2.3.5 /usr/bin/composer /usr/bin/composer
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+# Install dependencies
+RUN composer install --no-progress --no-interaction
 
-# Install composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Set permissions for Laravel
+RUN chown -R www-data:www-data /var/www && \
+    chmod -R 755 /var/www/storage
 
-# Copy existing application directory contents
-COPY . /var/www
+# Set Apache DocumentRoot to Laravel's public directory
+RUN sed -i 's!/var/www/html!/var/www/public!g' /etc/apache2/sites-available/000-default.conf
 
-# Copy existing application directory permissions
-COPY --chown=www-data:www-data . /var/www
+# Ensure entrypoint.sh is executable
+RUN chmod +x /var/www/docker/entrypoint.sh
 
-# Change current user to www
-USER www-data
+# Expose the port Laravel is running on
+EXPOSE 80
 
-# Expose port 9000 and start php-fpm server
-EXPOSE 8000
-CMD ["php-fpm"]
+# Set the entrypoint script
+ENTRYPOINT ["/var/www/docker/entrypoint.sh"]
