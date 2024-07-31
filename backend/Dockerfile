@@ -1,39 +1,37 @@
-# Use the official PHP image with Apache
-FROM php:8.2-apache
+# Use the official PHP image as the base image
+FROM php:8.2-fpm
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo pdo_mysql
+# Set working directory
+WORKDIR /var/www
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpng-dev \
-    libjpeg62-turbo-dev \
-    libfreetype6-dev \
-    locales \
-    zip \
-    unzip \
     git \
-    vim \
     curl \
-    supervisor
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    unzip
 
-# Enable Apache mod_rewrite
-RUN a2enmod rewrite
+# Clear cache
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
-WORKDIR /app/backend
+# Install PHP extensions
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
-# Copy the existing application directory contents
-COPY . .
+# Install composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Copy existing application directory contents
+COPY . /var/www
 
-# Install project dependencies
-RUN composer install
+# Copy existing application directory permissions
+COPY --chown=www-data:www-data . /var/www
 
-# Expose port 80
-EXPOSE 80 
+# Change current user to www
+USER www-data
 
-CMD ["php", "artisan", "serve", "--host=0.0.0.0"]
+# Expose port 9000 and start php-fpm server
+EXPOSE 8000
+CMD ["php-fpm"]

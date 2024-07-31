@@ -1,26 +1,26 @@
-# Use the official Node.js image
-FROM node:18
+# Use the official Node.js image.
+# https://hub.docker.com/_/node
+FROM node:16
 
-# Set working directory
-WORKDIR /app/frontend
+# Create and change to the app directory.
+WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json
+# Copy application dependency manifests to the container image.
+# A wildcard is used to ensure both package.json AND package-lock.json are copied.
+# Copying this separately prevents re-running npm install on every code change.
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# Install production dependencies.
+RUN npm install --only=production
 
-# Copy the rest of the application code
+# Copy local code to the container image.
 COPY . .
 
-# Ensure the directory is writable
-RUN chown -R node:node /app/frontend
+# Build the React app
+RUN npm run build
 
-# Install `serve` to serve the build
-RUN npm install -g serve
+# Set the base command to serve the React app
+CMD ["npx", "serve", "-s", "build"]
 
 # Expose port 3000
 EXPOSE 3000
-
-# Command to run the app
-CMD ["npm", "start"]
