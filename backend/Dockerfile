@@ -1,40 +1,30 @@
-FROM php:8.2-apache
+FROM php:8.1 as php
 
-RUN apt-get update -y && \
-    apt-get install -y unzip libpq-dev libcurl4-gnutls-dev && \
-    docker-php-ext-install pdo pdo_mysql bcmath
+RUN apt-get update -y
+RUN apt-get install -y unzip libpq-dev libcurl4-gnutls-dev
+RUN docker-php-ext-install pdo pdo_mysql bcmath
 
-RUN pecl install -o -f redis && \
-    rm -rf /tmp/pear && \
-    docker-php-ext-enable redis
+RUN pecl install -o -f redis \
+    && rm -rf /tmp/pear \
+    && docker-php-ext-enable redis
 
-# Enable mod_rewrite for Laravel
-RUN a2enmod rewrite
-
-# Set the working directory
 WORKDIR /var/www
-
-# Copy application source
 COPY . .
 
-# Copy composer binary
 COPY --from=composer:2.3.5 /usr/bin/composer /usr/bin/composer
 
-# Install dependencies
-RUN composer install --no-progress --no-interaction
+ENV PORT=8000
+#entry to run command need for backend
+ENTRYPOINT [ "docker/entrypoint.sh" ]
 
-# Set permissions for Laravel
-RUN chown -R www-data:www-data /var/www && \
-    chmod -R 755 /var/www/storage
+# ==============================================================================
+#  node
+FROM node:14-alpine as node
 
-# Set Apache DocumentRoot to Laravel's public directory
-RUN sed -i 's!/var/www/html!/var/www/public!g' /etc/apache2/sites-available/000-default.conf
+WORKDIR /var/www
+COPY . .
 
-# Ensure entrypoint.sh is executable
-RUN chmod +x /var/www/docker/entrypoint.sh
+RUN npm install --global cross-env
+RUN npm install
 
-# Expose the port Laravel is running on
-EXPOSE 80
-
-# Set the entrypoint script
-ENTRYPOINT ["/var/www/docker/entrypoint.sh"]
+VOLUME /var/www/node_modules

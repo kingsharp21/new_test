@@ -13,18 +13,16 @@ fi
 
 role=${CONTAINER_ROLE:-app}
 
+# I am runing seeding because one of the news apis used didn't have category 
+#so i decided to seed the db with some category first and use that to alocate category to articles
+
 if [ "$role" = "app" ]; then
     php artisan migrate
     php artisan key:generate
-    php artisan cache:clear
-    php artisan config:clear
-    php artisan route:clear
+    php artisan db:seed  
+    php artisan scrape:news 
     php artisan serve --port=$PORT --host=0.0.0.0 --env=.env
     exec docker-php-entrypoint "$@"
 elif [ "$role" = "queue" ]; then
     echo "Running the queue ... "
     php /var/www/artisan queue:work --verbose --tries=3 --timeout=180
-elif [ "$role" = "websocket" ]; then
-    echo "Running the websocket server ... "
-    php artisan websockets:serve
-fi
